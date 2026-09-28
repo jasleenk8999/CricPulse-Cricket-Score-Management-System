@@ -121,5 +121,12 @@ Match (1) ───< Innings (2) ───< BallEvent (N)
 
 ---
 
+## ScreenShots
+<img width="1468" height="744" alt="image" src="https://github.com/user-attachments/assets/a59fb606-30fa-4e64-b85c-cdc570f1ee95" />
+<img width="1470" height="748" alt="image" src="https://github.com/user-attachments/assets/e82d8e67-26bd-40f1-9ff2-e7bf8d6d04af" />
+<img width="1469" height="752" alt="image" src="https://github.com/user-attachments/assets/a9903868-ee30-44a1-8f1f-1f4308e4263f" />
+![Uploading image.png…]()
+
+
 ## 👤 Author
 - **Jasleen Kaur Multani** (ID: `12410014`)
