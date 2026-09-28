@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CricPulse | Live Cricket Score Platform</title>
+  <meta name="description" content="Live Cricket Scoring & Simulation Platform powered by Spring Boot. Track scores, player stats, commentary, and simulate matches in real-time.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏏</text></svg>">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">🏏</div>
+      <div>CricPulse</div>
+      <div class="live-badge">
+        <span class="live-dot"></span> LIVE
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><button class="nav-btn active" onclick="switchTab('dashboard')">Live Dashboard</button></li>
+      <li><button class="nav-btn" onclick="switchTab('matches')">Matches & Fixtures</button></li>
+      <li><button class="nav-btn" onclick="switchTab('teams')">Teams & Squads</button></li>
+    </ul>
+  </nav>
+
+  <!-- Match Selector Carousel -->
+  <div class="match-bar" id="matchSelectorBar">
+    <!-- Populated dynamically -->
+  </div>
+
+  <main class="container">
+
+    <!-- DASHBOARD VIEW -->
+    <section id="view-dashboard" class="view-section active">
+      
+      <!-- Live Score Hero -->
+      <div class="hero-card" id="heroCard">
+        <div class="hero-header">
+          <div>
+            <h1 class="hero-title" id="heroMatchTitle">Loading Live Match...</h1>
+            <div class="hero-meta">
+              <span id="heroVenue">Stadium</span> • 
+              <span id="heroFormat">T20</span> • 
+              <span id="heroToss">Toss info</span>
+            </div>
+          </div>
+          <div>
+            <span class="live-badge" id="heroStatusBadge">LIVE</span>
+          </div>
+        </div>
+
+        <div class="hero-scores">
+          <div class="team-box">
+            <div class="team-name-lg">
+              <span class="team-badge" id="teamABadge" style="background: var(--accent-green);"></span>
+              <span id="teamAName">Team A</span>
+            </div>
+            <div class="score-big" id="teamAScore">0/0</div>
+            <div class="overs-sub" id="teamAOvers">(0.0 ov)</div>
+          </div>
+
+          <div class="vs-divider">VS</div>
+
+          <div class="team-box right">
+            <div class="team-name-lg">
+              <span id="teamBName">Team B</span>
+              <span class="team-badge" id="teamBBadge" style="background: var(--accent-gold);"></span>
+            </div>
+            <div class="score-big" id="teamBScore">0/0</div>
+            <div class="overs-sub" id="teamBOvers">(0.0 ov)</div>
+          </div>
+        </div>
+
+        <div class="run-rates-bar">
+          <div class="rr-item">
+            <span class="rr-label">Current Run Rate:</span>
+            <span class="rr-val" id="heroCrr">0.00</span>
+          </div>
+          <div class="rr-item" id="heroRrrBox" style="display: none;">
+            <span class="rr-label">Required Run Rate:</span>
+            <span class="rr-val" id="heroRrr">0.00</span>
+          </div>
+          <div class="rr-item" id="heroTargetBox" style="display: none;">
+            <span class="rr-label">Target:</span>
+            <span class="rr-val" id="heroTarget">0</span>
+          </div>
+          <div class="rr-item">
+            <span class="rr-label">Status:</span>
+            <span class="rr-val" id="heroResultSummary" style="color: var(--accent-gold);">In Progress</span>
+          </div>
+        </div>
+
+        <!-- Recent Balls Strip -->
+        <div class="recent-balls-strip">
+          <span class="recent-balls-label">Recent Balls:</span>
+          <div class="balls-list" id="recentBallsList">
+            <!-- Dynamic balls -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Controls & Scorecard Grid -->
+      <div class="grid-2col">
+
+        <!-- Left Column: Active Players & Live Scorecard -->
+        <div>
+          
+          <!-- Current Batting & Bowling Statistics -->
+          <div class="card">
+            <div class="card-title">
+              <span>⚡ Active Batter & Bowler Statistics</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Real-time tracking</span>
+            </div>
+
+            <div class="current-players-grid">
+              <!-- Striker -->
+              <div class="player-mini-card active-striker">
+                <span class="player-role-badge">STRIKER 🏏</span>
+                <div class="player-name-val" id="strikerName">Loading...</div>
+                <div class="player-stats-row">
+                  <span>Runs: <strong class="player-stat-num" id="strikerRuns">0</strong> (<span id="strikerBalls">0</span>b)</span>
+                  <span>4s: <strong class="player-stat-num" id="striker4s">0</strong> | 6s: <strong class="player-stat-num" id="striker6s">0</strong></span>
+                </div>
+                <div class="player-stats-row" style="margin-top: 0.25rem;">
+                  <span>SR: <span class="player-stat-num" id="strikerSR">0.0</span></span>
+                </div>
+              </div>
+
+              <!-- Non Striker -->
+              <div class="player-mini-card">
+                <span class="player-role-badge">NON-STRIKER</span>
+                <div class="player-name-val" id="nonStrikerName">Loading...</div>
+                <div class="player-stats-row">
+                  <span>Runs: <strong class="player-stat-num" id="nonStrikerRuns">0</strong> (<span id="nonStrikerBalls">0</span>b)</span>
+                  <span>4s: <strong class="player-stat-num" id="nonStriker4s">0</strong> | 6s: <strong class="player-stat-num" id="nonStriker6s">0</strong></span>
+                </div>
+                <div class="player-stats-row" style="margin-top: 0.25rem;">
+                  <span>SR: <span class="player-stat-num" id="nonStrikerSR">0.0</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bowler Stat -->
+            <div class="player-mini-card" style="border-left: 4px solid var(--accent-gold);">
+              <div class="player-role-badge" style="color: var(--accent-gold);">CURRENT BOWLER ⚾</div>
+              <div class="player-name-val" id="bowlerName">Loading...</div>
+              <div class="player-stats-row">
+                <span>Overs: <strong class="player-stat-num" id="bowlerOvers">0.0</strong></span>
+                <span>Runs: <strong class="player-stat-num" id="bowlerRuns">0</strong></span>
+                <span>Wickets: <strong class="player-stat-num" id="bowlerWickets" style="color: var(--accent-red);">0</strong></span>
+                <span>Econ: <strong class="player-stat-num" id="bowlerEcon">0.00</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Batting Scorecard -->
+          <div class="card">
+            <div class="card-title">Batting Scorecard</div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Batter</th>
+                    <th>Dismissal</th>
+                    <th>Runs</th>
+                    <th>Balls</th>
+                    <th>4s</th>
+                    <th>6s</th>
+                    <th>SR</th>
+                  </tr>
+                </thead>
+                <tbody id="battingScorecardBody">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Bowling Scorecard -->
+          <div class="card">
+            <div class="card-title">Bowling Scorecard</div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bowler</th>
+                    <th>Overs</th>
+                    <th>Maidens</th>
+                    <th>Runs</th>
+                    <th>Wickets</th>
+                    <th>Econ</th>
+                  </tr>
+                </thead>
+                <tbody id="bowlingScorecardBody">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Simulation Controls & Manual Scoring -->
+        <div>
+
+          <!-- Auto Simulator Deck -->
+          <div class="card" style="border-color: rgba(0, 230, 118, 0.4);">
+            <div class="card-title" style="color: var(--accent-green);">
+              <span>🎮 Live Match Simulation</span>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Simulate live balls or auto-play full match events automatically.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <button class="btn btn-primary" onclick="simulateOneBall()">
+                <span>⚡ Simulate 1 Ball</span>
+              </button>
+              <button class="btn btn-gold" id="btnAutoPlay" onclick="toggleAutoPlay()">
+                <span>▶ Auto Play Broadcast (2s)</span>
+              </button>
+              <button class="btn btn-secondary" onclick="simulateFullMatch()">
+                <span>🚀 Fast-Forward Complete Match</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Manual Ball Event Logger -->
+          <div class="card">
+            <div class="card-title">
+              <span>✍ Manual Ball Logger</span>
+            </div>
+
+            <form id="ballLoggerForm" onsubmit="handleManualBall(event)">
+              <div class="form-group">
+                <label class="form-label">Runs Scored</label>
+                <div class="run-selector" id="runSelector">
+                  <div class="run-pill selected" onclick="selectRun(0, this)">0</div>
+                  <div class="run-pill" onclick="selectRun(1, this)">1</div>
+                  <div class="run-pill" onclick="selectRun(2, this)">2</div>
+                  <div class="run-pill" onclick="selectRun(3, this)">3</div>
+                  <div class="run-pill" onclick="selectRun(4, this)">4</div>
+                  <div class="run-pill" onclick="selectRun(6, this)">6</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Extra Type</label>
+                <select class="form-select" id="extraTypeSelect">
+                  <option value="NONE">None (Legal Ball)</option>
+                  <option value="WIDE">Wide</option>
+                  <option value="NO_BALL">No Ball</option>
+                  <option value="BYE">Bye</option>
+                  <option value="LEG_BYE">Leg Bye</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0;">
+                <input type="checkbox" id="isWicketCheck" onchange="toggleWicketOptions(this.checked)" style="width: 18px; height: 18px;">
+                <label for="isWicketCheck" class="form-label" style="margin-bottom: 0; color: var(--accent-red); font-weight: 700; cursor: pointer;">
+                  Wicket Dismissal! 🚨
+                </label>
+              </div>
+
+              <div id="wicketOptionsBox" style="display: none; background: rgba(255, 23, 68, 0.08); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;">
+                <div class="form-group">
+                  <label class="form-label">Dismissal Type</label>
+                  <select class="form-select" id="dismissalTypeSelect">
+                    <option value="BOWLED">Bowled</option>
+                    <option value="CAUGHT">Caught</option>
+                    <option value="LBW">LBW</option>
+                    <option value="RUN_OUT">Run Out</option>
+                    <option value="STUMPED">Stumped</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Custom Commentary</label>
+                <input type="text" class="form-control" id="customCommentaryInput" placeholder="e.g. Magnificent lofted drive for six!">
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>Submit Ball Event</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Ball-by-Ball Commentary -->
+          <div class="card">
+            <div class="card-title">
+              <span>🎙 Ball-by-Ball Commentary</span>
+            </div>
+            <div class="commentary-list" id="commentaryStream">
+              <!-- Dynamic commentary -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MATCHES VIEW -->
+    <section id="view-matches" class="view-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>All Cricket Matches & Fixtures</h2>
+        <button class="btn btn-primary" onclick="openCreateMatchModal()">+ Schedule New Match</button>
+      </div>
+
+      <div class="teams-grid" id="allMatchesGrid">
+        <!-- Dynamic match cards -->
+      </div>
+    </section>
+
+    <!-- TEAMS VIEW -->
+    <section id="view-teams" class="view-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Teams & Player Squads</h2>
+        <button class="btn btn-primary" onclick="openCreatePlayerModal()">+ Add New Player</button>
+      </div>
+
+      <div class="teams-grid" id="teamsContainer">
+        <!-- Dynamic teams & rosters -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Create Match Modal -->
+  <div class="modal-overlay" id="createMatchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Schedule New Cricket Match</h3>
+        <button class="close-btn" onclick="closeModal('createMatchModal')">&times;</button>
+      </div>
+      <form onsubmit="handleCreateMatch(event)">
+        <div class="form-group">
+          <label class="form-label">Match Title</label>
+          <input type="text" class="form-control" id="newMatchTitle" required placeholder="e.g. T20 Final: IND vs AUS">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Venue / Stadium</label>
+          <input type="text" class="form-control" id="newMatchVenue" required placeholder="e.g. Eden Gardens, Kolkata">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Match Format</label>
+          <select class="form-select" id="newMatchFormat">
+            <option value="T20">T20 (20 Overs)</option>
+            <option value="ODI">ODI (50 Overs)</option>
+            <option value="TEST">TEST (Unlimited)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Overs</label>
+          <input type="number" class="form-control" id="newMatchOvers" value="20" min="1" max="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Team A</label>
+          <select class="form-select" id="newMatchTeamA" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Team B</label>
+          <select class="form-select" id="newMatchTeamB" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Toss Winner</label>
+          <select class="form-select" id="newMatchTossWinner" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Toss Decision</label>
+          <select class="form-select" id="newMatchTossDecision">
+            <option value="BAT">Elected to Bat First</option>
+            <option value="BOWL">Elected to Bowl First</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create & Start Match</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Player Modal -->
+  <div class="modal-overlay" id="createPlayerModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Player to Squad</h3>
+        <button class="close-btn" onclick="closeModal('createPlayerModal')">&times;</button>
+      </div>
+      <form onsubmit="handleCreatePlayer(event)">
+        <div class="form-group">
+          <label class="form-label">Player Full Name</label>
+          <input type="text" class="form-control" id="newPlayerName" required placeholder="e.g. Shubman Gill">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Team</label>
+          <select class="form-select" id="newPlayerTeam" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Player Role</label>
+          <select class="form-select" id="newPlayerRole">
+            <option value="BATSMAN">Batsman</option>
+            <option value="BOWLER">Bowler</option>
+            <option value="ALL_ROUNDER">All Rounder</option>
+            <option value="WICKET_KEEPER">Wicket Keeper</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Batting Style</label>
+          <input type="text" class="form-control" id="newPlayerBattingStyle" placeholder="Right-hand">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bowling Style</label>
+          <input type="text" class="form-control" id="newPlayerBowlingStyle" placeholder="Right-arm Fast">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jersey Number</label>
+          <input type="number" class="form-control" id="newPlayerJersey" placeholder="77">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Add Player</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>Developed by <strong>Jasleen Kaur Multani</strong> <span class="student-id">(ID: 12410014)</span></p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
