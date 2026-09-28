@@ -36,6 +36,26 @@ It simulates live international and league cricket matches (T20, ODI, Test), com
 
 ---
 
+## 💻 Software & System Requirements
+
+### Development & Runtime Environment
+- **Java Development Kit (JDK)**: Java 17.0 LTS or higher (OpenJDK / Oracle JDK)
+- **Build Tool**: Apache Maven 3.8.0 or above
+- **Application Framework**: Spring Boot 3.2.5
+- **Database System**: Embedded H2 Database (In-Memory & File Persistence; zero external configuration needed)
+- **API Documentation**: SpringDoc OpenAPI WebMVC UI 2.5.0
+- **Operating System**: macOS 11+, Windows 10/11, or Linux (Ubuntu 20.04+)
+
+### Client & Web Browser Requirements
+- Modern HTML5/CSS3/JavaScript ES6 compatible browser (Google Chrome, Mozilla Firefox, Apple Safari, Microsoft Edge)
+
+### Recommended API Testing Tools (Optional)
+- **Postman / Insomnia**: For custom REST API payload testing
+- **cURL CLI**: Command-line HTTP request execution
+- **Swagger UI**: Built-in interactive API browser at `http://localhost:8080/swagger-ui.html`
+
+---
+
 ## 🛠 Technology Stack
 
 - **Backend**: Java 17, Spring Boot 3.2.5, Spring Data JPA, Hibernate, Maven
